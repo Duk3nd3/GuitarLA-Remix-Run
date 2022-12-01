@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useOutletContext } from '@remix-run/react';
 import { ClientOnly } from 'remix-utils';
 import styles from '~/styles/carrito.css';
+import Swal from 'sweetalert2';
 
 export function links() {
 	return [
@@ -83,7 +84,42 @@ function Carrito() {
 											<button
 												type='button'
 												className='btn-eliminar'
-												onClick={() => eliminarGuitarra(producto.id)}
+												onClick={() =>
+													eliminarGuitarra
+														? Swal.fire({
+																icon: 'warning',
+																title: 'Estas seguro/a?',
+																text: 'Esta operacion no se puede revertir',
+																imageUrl: '/img/producto_eliminado.jpg',
+																imageWidth: 900,
+																imageHeight: 175,
+																showCancelButton: true,
+																allowOutsideClick: false,
+																confirmButtonColor: '#3085d6',
+																cancelButtonColor: '#d33',
+																confirmButtonText: 'Si, borralo!',
+														  }).then((result) => {
+																if (result.isConfirmed) {
+																	eliminarGuitarra(producto.id);
+																	Swal.fire({
+																		icon: 'success',
+																		title: 'Proceso completado!',
+																		text: 'Tu producto se ha eliminado del carrito',
+																		showConfirmButton: false,
+																		timer: 3000,
+																	});
+																} else {
+																	Swal.fire({
+																		icon: 'success',
+																		title: 'Proceso cancelado!',
+																		text: 'Tu producto se mantiene dentro del carrito',
+																		showConfirmButton: false,
+																		timer: 3000,
+																	});
+																}
+														  })
+														: ''
+												}
 											>
 												X
 											</button>
